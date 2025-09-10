@@ -8,7 +8,7 @@
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 import tkinter as tk
-from tkinter import filedialog
+from tkinter import filedialog, OptionMenu, StringVar
 from PIL import Image, ImageTk
 import numpy as np
 
@@ -22,7 +22,7 @@ class ImageCryptoApp:
         self.file_path = ""  # Image file that the user chooses
 
         # Window
-        self.root.geometry('800x600')
+        self.root.geometry('1024x768')
 
         # Image Placeholders
         self.original_img = None
@@ -32,15 +32,24 @@ class ImageCryptoApp:
         self.load_btn = tk.Button(root, text="Load Image", command=self.load_image)
         self.load_btn.pack(pady=5)
 
-        self.encrypt_btn = tk.Button(root, text="Apply", command=self.xor, state=tk.DISABLED)
+        cipher_options = ["xor", "Test"]
+        self.selected_cipher = StringVar(value="xor")
+        self.dropdown_menu = OptionMenu(root, self.selected_cipher, *cipher_options).pack(pady=5)
+
+        self.encrypt_btn = tk.Button(root, text="Encrypt", command=self.select_cipher, state=tk.DISABLED)
         self.encrypt_btn.pack(pady=5)
 
-        # Image Labels
-        self.left_img_label = tk.Label(root)
-        self.left_img_label.pack()
 
-        self.right_img_label = tk.Label(root)
-        self.right_img_label.pack()
+        # Image Labels
+        self.img_frame = tk.Frame(root)
+        self.img_frame.pack(pady=10)
+
+        self.left_img_label = tk.Label(self.img_frame, text="Original Image")
+        self.left_img_label.pack(side="left", padx=10)
+
+        self.right_img_label = tk.Label(self.img_frame, text="Encrypted Image")
+        self.right_img_label.pack(side="right", padx=10)
+
 
     def load_image(self):
         filepath = filedialog.askopenfilename(filetypes=[("Images", "*.png *.jpg *.jpeg"), ("All files", "*.*")])
@@ -49,6 +58,21 @@ class ImageCryptoApp:
             self.display_image(self.original_img)
             self.encrypt_btn.config(state=tk.NORMAL)
 
+    def display_image(self, img):
+        resized_img = img.copy()
+        resized_img.thumbnail((400, 400))
+        tk_img = ImageTk.PhotoImage(resized_img)
+        self.left_img_label.config(image=tk_img)
+        self.left_img_label.image = tk_img 
+        
+    def select_cipher(self):
+        cipher = self.selected_cipher.get()
+        if cipher == "xor":
+            self.xor()
+        else:
+            print(f"No cipher implemented yet for: {cipher}")
+
+
     def xor(self):
         # This is just a test function to test applying operations to images
         if self.original_img:
@@ -56,14 +80,6 @@ class ImageCryptoApp:
             xor_arr = arr ^ 127
             self.encrypted_img = Image.fromarray(xor_arr)
             self.display_image(self.encrypted_img)
-
-    def display_image(self, img):
-        resized_img = img.copy()
-        resized_img.thumbnail((400, 400))
-        tk_img = ImageTk.PhotoImage(resized_img)
-        self.left_img_label.config(image=tk_img)
-        self.left_img_label.image = tk_img 
-
 
 if __name__ == "__main__":
     root = tk.Tk()
