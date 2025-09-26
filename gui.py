@@ -13,8 +13,8 @@ from PIL import Image, ImageTk
 import numpy as np
 from Crypto.Cipher import AES
 
-# TODO: IMPLEMENT CRYPTOGRAPHY FUNCTIONS
-# TODO: IMPLEMENT ENCRYPTED IMAGE SAVE, SO I CAN DECRYPT IT
+# TODO: IMPLEMENT MORE CRYPTOGRAPHY FUNCTIONS
+# TODO: Make GUI look pretty? (better image scaling, color scheme, etc)
 
 class ImageCryptoApp:
     def __init__(self, root):
@@ -24,7 +24,7 @@ class ImageCryptoApp:
         self.file_path = ""  # Image file that the user chooses
 
         # Window
-        self.root.geometry('1200x900')
+        self.root.geometry('1920x1080')
 
         # Image Placeholders
         self.original_img = None
